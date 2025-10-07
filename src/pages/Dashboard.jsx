@@ -1,9 +1,9 @@
-
+import DashboardComponent from '../components/dashboard/DashboardComponent'
 
 function Dashboard() {
   return (
     <>
-    <div className='text-black'>Dashboard</div>
+      <DashboardComponent/>
     </>
   )
 }
