@@ -68,8 +68,7 @@ export default function Layout() {
           isMobile={isMobile}
         />
 
-        {/* Contenido */}
-        <main className="flex-1 overflow-auto py-6">
+        <main className="flex-1 overflow-auto py-6 scrollbar-hide">
           <Outlet />
           <ThemeCustomizer />
         </main>

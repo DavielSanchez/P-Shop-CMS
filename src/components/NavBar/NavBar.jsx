@@ -61,7 +61,7 @@ export default function Header({ isMobile, toggleSidebar }) {
             className="font-medium text-xs md:text-lg"
             style={{ color: appliedMode === "dark" ? "#d1d5db" : "#6b7280" }}
           >
-            CMS
+            CRM
           </div>
         </div>
       </div>

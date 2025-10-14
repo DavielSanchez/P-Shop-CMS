@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useColors } from '../../../hooks/useColor'
-import topProductsData from '../../../data/Products'
+import {topProductsData} from '../../../data/Products'
 import { Close, HighlightOff } from '@mui/icons-material'
 
 function ProductTable() {

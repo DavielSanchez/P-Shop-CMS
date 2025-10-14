@@ -10,7 +10,7 @@ import { useColors } from "../../hooks/useColor";
 const menuItems = [
   { text: "Dashboard", icon: <Home />, path: "/" },
   { text: "Productos", icon: <Category />, path: "/products" },
-  { text: "Categorías", icon: <Folder />, path: "/categories" },
+  { text: "Categorías", icon: <Folder />, path: "/categories", disabled: true },
   { text: "Inventario", icon: <Inventory />, path: "/inventory", disabled: true },
   { text: "Pedidos", icon: <ShoppingCart />, path: "/orders",disabled: true },
   { text: "Clientes", icon: <People />, path: "/customers", disabled: true },
@@ -59,7 +59,7 @@ export default function Sidebar({ open, setOpen, isMobile }) {
               opacity: showText ? 1 : 0,
             }}
           >
-            P-SHOP CMS
+            P-SHOP CRM
           </h1>
         )}
 

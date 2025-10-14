@@ -83,7 +83,7 @@ export const themes = {
             accent: "#2dd4bf",
             background: "#0f172a",
             surface: "#1e293b",
-            textPrimary: "#e0f2fe",
+            textPrimary: "#cfe7f7ff",
             textSecondary: "#93c5fd",
             textDisabled: "#6b7280",
             muted: "#334155",

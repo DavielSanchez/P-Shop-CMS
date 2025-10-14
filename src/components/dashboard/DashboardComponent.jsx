@@ -4,6 +4,8 @@ import ProductTable from './tables/ProductTable'
 import { useColors } from '../../hooks/useColor'
 import TopCategoriasChart from './charts/TopCategoriasChart'
 import PedidosStatusChart from './charts/PedidosStatusChart'
+import TopCategoriasProductosChart from './charts/TopCategoriasProducto'
+import VentasSemanalesChart from './charts/VentasSemanalesChart'
 
 function DashboardComponent() {
   const colors = useColors()
@@ -27,17 +29,25 @@ function DashboardComponent() {
       </div>
       <div className="w-full py-4 grid grid-cols-12 gap-4">
         <div
-          className="flex items-center justify-center shadow-md py-6  rounded-xl col-span-12 lg:col-span-4"
+          className="shadow-md p-4 rounded-xl col-span-12 lg:col-span-4 min-h-0 flex flex-col"
           style={{ backgroundColor: colors.background }}
         >
-          <PedidosStatusChart/>
+          <PedidosStatusChart />
         </div>
         <div
-          className="shadow-md p-4 rounded-xl col-span-12 lg:col-span-4"
+          className="shadow-md p-4 rounded-xl col-span-12 lg:col-span-4 h-[500px]"
           style={{ backgroundColor: colors.background, color: colors.textPrimary }}
         >
-          <TopCategoriasChart />
+          <TopCategoriasProductosChart/>
         </div>
+
+        <div
+          className="shadow-md p-4 rounded-xl col-span-12 lg:col-span-4 h-[500px]"
+          style={{ backgroundColor: colors.background, color: colors.textPrimary }}
+        >
+          <VentasSemanalesChart/>
+        </div>
+        
       </div>
     </main> 
     </>

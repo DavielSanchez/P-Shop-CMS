@@ -14,6 +14,7 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Users from './pages/Users'
 import Layout from './components/Layout/MainLayout'
+import ProductDetail from './pages/ProductDetail'
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
-            {/* <Route path="products" element={<Products />} /> */}
+            <Route path="products" element={<Products />} />
+            <Route path="product/:name" element={<ProductDetail/>} />
             {/* <Route path="categories" element={<Categories />} /> */}
             {/* <Route path="inventory" element={<Inventory />} />
             <Route path="orders" element={<Orders />} />
