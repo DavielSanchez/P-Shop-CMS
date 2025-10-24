@@ -1,4 +1,10 @@
+import CategoriesComponent from "../components/categories/CategoriesComponent"
+
 function Categories() {
-  return <h1>Categorías</h1>
+  return (
+    <>
+    <CategoriesComponent/>
+    </>
+  )
 }
 export default Categories

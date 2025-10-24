@@ -10,7 +10,7 @@ import { useColors } from "../../hooks/useColor";
 const menuItems = [
   { text: "Dashboard", icon: <Home />, path: "/" },
   { text: "Productos", icon: <Category />, path: "/products" },
-  { text: "Categorías", icon: <Folder />, path: "/categories", disabled: true },
+  { text: "Categorías", icon: <Folder />, path: "/categories", disabled: false },
   { text: "Inventario", icon: <Inventory />, path: "/inventory", disabled: true },
   { text: "Pedidos", icon: <ShoppingCart />, path: "/orders",disabled: true },
   { text: "Clientes", icon: <People />, path: "/customers", disabled: true },

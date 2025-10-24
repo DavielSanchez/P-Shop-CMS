@@ -15,6 +15,7 @@ import Settings from './pages/Settings'
 import Users from './pages/Users'
 import Layout from './components/Layout/MainLayout'
 import ProductDetail from './pages/ProductDetail'
+import CategoryDetail from './components/categories/CategoryDetail'
 
 function App() {
   return (
@@ -25,7 +26,8 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
             <Route path="product/:name" element={<ProductDetail/>} />
-            {/* <Route path="categories" element={<Categories />} /> */}
+            <Route path="categories" element={<Categories />} />
+            <Route path="categories/:name" element={<CategoryDetail/>} />
             {/* <Route path="inventory" element={<Inventory />} />
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />

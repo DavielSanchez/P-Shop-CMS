@@ -26,6 +26,7 @@ function Tabs({ product }) {
         
         // Ventas
         productCategory: product.productCategory || '',
+        category: product.category || '',
         productComment: product.productComment || ''
     });
 
@@ -530,7 +531,7 @@ function Tabs({ product }) {
                                 </label>
                                 <input
                                     type="text"
-                                    value={formData.productCategory}
+                                    value={formData.category}
                                     onChange={(e) => handleInputChange('productCategory', e.target.value)}
                                     disabled={!isEditing}
                                     className="w-full p-3 rounded border"
