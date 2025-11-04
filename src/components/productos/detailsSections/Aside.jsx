@@ -22,18 +22,19 @@ function Aside({product}) {
                     border: `1px solid ${colors.border}`
                     }}
                 >
-                    {product.name ? product.name.substring(0, 2).toUpperCase() : 'PR'}
+                    {product.productMainImage ? <img src={product.productMainImage} alt="" /> : product.productName ? product.productName.substring(0, 2).toUpperCase() : 'PR'  }
+                    <img src={product} alt="" />
                 </div>
             {/* 1. Estado */}
-            {/* <div>
+            <div>
                 <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                 Estado
                 </div>
                 <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span style={{ color: colors.textPrimary }}>Habilitado</span>
+                <span style={{ color: colors.textPrimary }}>{product.status}</span>
                 </div>
-            </div> */}
+            </div>
 
             {/* 2. Asignado a */}
             {/* <div>

@@ -11,9 +11,13 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
     return { label: 'En stock', color: '#10b981' };
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
   return (
     <div className="flex flex-col">
-      {/* CONTENIDO CARDS - 2 POR LÍNEA */}
       <div 
         className="rounded-lg flex-1 mb-4 py-6"
         style={{
@@ -33,13 +37,13 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
             {products.map((product) => {
               if (!product) return null;
               
-              const stockStatus = getStockStatus(product.stock || 0, product.minStock || 0);
-              const profit = (product.price || 0) - (product.cost || 0);
-              const margin = product.cost ? ((profit / product.cost) * 100).toFixed(1) : '0';
+              const stockStatus = getStockStatus(product.productStock || 0, product.minStock || 0);
+              const profit = (product.productPrice || 0) - (product.costPrice || 0);
+              const margin = product.costPrice ? ((profit / product.costPrice) * 100).toFixed(1) : '0';
 
               return (
                 <div
-                  key={product.id}
+                  key={product._id || product.id}
                   className="border rounded-lg p-6 transition-all hover:shadow-lg h-fit"
                   style={{
                     backgroundColor: colors.background,
@@ -47,39 +51,49 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
                   }}
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
                       <div 
-                        className="w-16 h-16 rounded-lg flex items-center justify-center"
+                        className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: colors.primary + '20' }}
                       >
-                        <Inventory style={{ color: colors.primary, fontSize: 32 }} />
+                        {/* <Inventory style={{ color: colors.primary, fontSize: 32 }} /> */}
+                        <img src={product.productMainImage} alt={`Imagen del producto ${product.productName}`} />
+
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg mb-1" style={{ color: colors.textPrimary }}>
-                          {product.name}
+                      <div className="min-w-0 flex-1">
+                        <h3 
+                          className="font-bold text-lg mb-1 truncate" 
+                          style={{ color: colors.textPrimary }}
+                          title={product.productName}
+                        >
+                          {truncateText(product.productName, 40)}
                         </h3>
-                        <p className="text-sm mb-2" style={{ color: colors.textSecondary }}>
-                          {product.description || 'Sin descripción'}
+                        <p 
+                          className="text-sm mb-2 truncate" 
+                          style={{ color: colors.textSecondary }}
+                          title={product.productSummary}
+                        >
+                          {truncateText(product.productSummary, 60)}
                         </p>
                         <div className="flex gap-2 flex-wrap">
-                          {(product.tags || []).slice(0, 3).map(tag => (
+                          {product.productTag && (
                             <span 
-                              key={tag}
-                              className="px-2 py-1 rounded text-xs"
+                              className="px-2 py-1 rounded text-xs truncate max-w-[120px]"
                               style={{ 
                                 backgroundColor: colors.border,
                                 color: colors.textSecondary
                               }}
+                              title={product.productTag}
                             >
-                              {tag}
+                              {truncateText(product.productTag, 20)}
                             </span>
-                          ))}
+                          )}
                         </div>
                       </div>
                     </div>
                     
                     <span 
-                      className="px-3 py-1 rounded-full text-sm font-medium"
+                      className="px-3 py-1 rounded-full text-sm font-medium flex-shrink-0 ml-2"
                       style={{ 
                         backgroundColor: `${stockStatus.color}20`,
                         color: stockStatus.color
@@ -92,31 +106,37 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center gap-2">
                       <AttachMoney style={{ color: colors.primary }} />
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-sm" style={{ color: colors.textSecondary }}>Precio</div>
-                        <div className="font-bold" style={{ color: colors.textPrimary }}>${product.price}</div>
+                        <div className="font-bold truncate" style={{ color: colors.textPrimary }}>
+                          ${product.productPrice}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Storage style={{ color: colors.primary }} />
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-sm" style={{ color: colors.textSecondary }}>Stock</div>
-                        <div className="font-bold" style={{ color: colors.textPrimary }}>{product.stock} units</div>
+                        <div className="font-bold truncate" style={{ color: colors.textPrimary }}>
+                          {product.productStock} unid
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Category style={{ color: colors.primary }} />
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-sm" style={{ color: colors.textSecondary }}>Categoría</div>
-                        <div className="font-bold capitalize" style={{ color: colors.textPrimary }}>{product.category}</div>
+                        <div className="font-bold capitalize truncate" style={{ color: colors.textPrimary }}>
+                          {product.productCategory?.categoryName || 'Sin categoría'}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Inventory style={{ color: colors.primary }} />
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-sm" style={{ color: colors.textSecondary }}>Margen</div>
                         <div 
-                          className="font-bold" 
+                          className="font-bold truncate" 
                           style={{ color: margin > 0 ? '#10b981' : '#ef4444' }}
                         >
                           {margin}%
@@ -126,10 +146,10 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <div className="text-sm" style={{ color: colors.textSecondary }}>
+                    <div className="text-sm truncate min-w-0 flex-1 mr-2" style={{ color: colors.textSecondary }}>
                       SKU: <span className="font-mono">{product.sku}</span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-shrink-0">
                       <button
                         onClick={() => onEditProduct && onEditProduct(product)}
                         className="px-4 py-2 rounded-lg font-medium transition-colors hover:scale-105"
@@ -141,7 +161,7 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
                         Editar
                       </button>
                       <button
-                        onClick={() => onDeleteProduct && onDeleteProduct(product.id)}
+                        onClick={() => onDeleteProduct && onDeleteProduct(product._id || product.id)}
                         className="px-4 py-2 border rounded-lg font-medium transition-colors hover:scale-105"
                         style={{
                           borderColor: '#ef4444',
@@ -160,7 +180,6 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
         )}
       </div>
 
-      {/* PAGINACIÓN - MISMA QUE EN GRID Y TABLE */}
       {pagination && pagination.totalPages > 1 && (
         <div style={{backgroundColor: 'transparent', borderColor: colors.border}} className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 rounded-lg border">
           <span style={{ color: colors.textPrimary, fontSize: '14px' }} className="text-center sm:text-left">
@@ -182,14 +201,12 @@ function ProductsCards({ products = [], onEditProduct, onDeleteProduct, paginati
               ‹ Anterior
             </button>
             
-            {/* NÚMEROS DE PÁGINA - RESPONSIVE */}
             <div className="flex gap-1">
               {(() => {
                 const pages = [];
                 const totalPages = pagination.totalPages;
                 const currentPage = pagination.currentPage;
                 
-                // Mostrar máximo 3 páginas en móvil, 5 en desktop
                 let startPage = Math.max(1, currentPage - 1);
                 let endPage = Math.min(totalPages, currentPage + 1);
                 

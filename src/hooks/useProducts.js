@@ -1,8 +1,11 @@
+// hooks/useProducts.js
 import { useState, useMemo, useEffect } from 'react';
-import { mockProducts } from '../data/products';
+import { productService, productUtils } from '../services/products';
 
 export const useProducts = () => {
-    const [products] = useState(mockProducts);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [filters, setFilters] = useState({
         search: '',
         category: 'todos',
@@ -10,48 +13,75 @@ export const useProducts = () => {
         minPrice: '',
         maxPrice: ''
     });
-    const [sortBy, setSortBy] = useState('name');
+    const [sortBy, setSortBy] = useState('productName');
     const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
     const [viewMode, setViewMode] = useState('table');
 
-    // Filtrar y ordenar productos
+    useEffect(() => {
+        const loadProducts = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await productService.getAllProducts();
+                const productsArray = response.products || [];
+                
+                setProducts(productsArray);
+            } catch (err) {
+                console.error('Error loading products:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProducts();
+    }, []);
+
     const filteredAndSortedProducts = useMemo(() => {
+        if (!Array.isArray(products) || products.length === 0) {
+            return [];
+        }
+
+
         let filtered = products.filter(product => {
-            // Filtro de búsqueda
-            const matchesSearch = filters.search === '' ||
-                product.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-                product.sku.toLowerCase().includes(filters.search.toLowerCase()) ||
-                product.tags.some(tag => tag.toLowerCase().includes(filters.search.toLowerCase()));
+            if (!product) return false;
 
-            // Filtro de categoría
-            const matchesCategory = filters.category === 'todos' || product.category === filters.category;
+            const matchesSearch = !filters.search || 
+                (product.productName && product.productName.toLowerCase().includes(filters.search.toLowerCase())) ||
+                (product.sku && product.sku.toLowerCase().includes(filters.search.toLowerCase()));
 
-            // Filtro de estado de stock
-            const getStockStatus = (stock, minStock) => {
-                if (stock === 0) return 'out-of-stock';
-                if (stock <= minStock) return 'low-stock';
-                return 'active';
-            };
+            const matchesCategory = filters.category === 'todos' || 
+                product.category === filters.category;
 
-            const productStatus = getStockStatus(product.stock, product.minStock);
-            const matchesStatus = filters.status === 'todos' || productStatus === filters.status;
+            const matchesStatus = filters.status === 'todos' || 
+                product.status === filters.status;
 
-            // Filtro de precio
-            const matchesMinPrice = !filters.minPrice || product.price >= parseFloat(filters.minPrice);
-            const matchesMaxPrice = !filters.maxPrice || product.price <= parseFloat(filters.maxPrice);
+            const productPrice = parseFloat(product.productPrice) || 0;
+            const minPrice = parseFloat(filters.minPrice) || 0;
+            const maxPrice = parseFloat(filters.maxPrice) || Infinity;
+            
+            const matchesMinPrice = !filters.minPrice || productPrice >= minPrice;
+            const matchesMaxPrice = !filters.maxPrice || productPrice <= maxPrice;
 
             return matchesSearch && matchesCategory && matchesStatus && matchesMinPrice && matchesMaxPrice;
         });
 
-        // Ordenar
         filtered.sort((a, b) => {
             let aValue = a[sortBy];
             let bValue = b[sortBy];
 
-            if (sortBy === 'price' || sortBy === 'stock' || sortBy === 'cost') {
-                aValue = parseFloat(aValue);
-                bValue = parseFloat(bValue);
+            if (aValue === undefined || aValue === null) aValue = '';
+            if (bValue === undefined || bValue === null) bValue = '';
+
+            if (sortBy === 'productPrice' || sortBy === 'stock' || sortBy === 'costPrice') {
+                aValue = parseFloat(aValue) || 0;
+                bValue = parseFloat(bValue) || 0;
+            }
+
+            if (typeof aValue === 'string') {
+                aValue = aValue.toLowerCase();
+                bValue = bValue.toLowerCase();
             }
 
             if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
@@ -62,14 +92,13 @@ export const useProducts = () => {
         return filtered;
     }, [products, filters, sortBy, sortOrder]);
 
-    // Items por página según la vista
     const getItemsPerPage = () => {
         switch (viewMode) {
             case 'grid':
                 return 12;
             case 'cards':
                 return 8;
-            default: // table
+            default:
                 return 10;
         }
     };
@@ -81,6 +110,7 @@ export const useProducts = () => {
         const endIndex = startIndex + itemsPerPage;
         const paginatedItems = filteredAndSortedProducts.slice(startIndex, endIndex);
         const totalPages = Math.ceil(filteredAndSortedProducts.length / itemsPerPage);
+
 
         return {
             currentPage,
@@ -96,18 +126,29 @@ export const useProducts = () => {
         };
     }, [filteredAndSortedProducts, currentPage, itemsPerPage]);
 
-    // Resetear a página 1 cuando cambia la vista
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [viewMode]);
-
-    // Resetear a página 1 cuando cambian los filtros
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filters]);
+    // Función para recargar productos
+    const refetchProducts = async (customFilters = {}) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const allFilters = { ...filters, ...customFilters };
+            const response = await productService.getAllProducts(allFilters);
+            const productsArray = response.products || [];
+            setProducts(productsArray);
+            return productsArray;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return {
         products: filteredAndSortedProducts,
+        allProducts: products,
+        loading,
+        error,
         pagination,
         filters,
         setFilters,
@@ -117,6 +158,8 @@ export const useProducts = () => {
         setSortOrder,
         viewMode,
         setViewMode,
-        itemsPerPage
+        itemsPerPage,
+        refetchProducts,
+        productUtils
     };
 };

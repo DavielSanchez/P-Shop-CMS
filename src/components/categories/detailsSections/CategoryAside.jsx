@@ -22,7 +22,6 @@ function CategoryAside({category}) {
                 border: `1px solid ${colors.border}`
             }}>
 
-                {/* Imagen de la categoría */}
                 <div className="w-full aspect-square mb-3 rounded-lg flex items-center justify-center overflow-hidden"
                     style={{ 
                         backgroundColor: colors.primary + '20',
@@ -41,7 +40,6 @@ function CategoryAside({category}) {
                     )}
                 </div>
 
-                {/* Estado de la categoría */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         Estado
@@ -55,7 +53,6 @@ function CategoryAside({category}) {
                     </div>
                 </div>
 
-                {/* Productos en categoría */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         Productos
@@ -65,7 +62,6 @@ function CategoryAside({category}) {
                     </div>
                 </div>
 
-                {/* Tag de categoría */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         Tag
@@ -80,7 +76,6 @@ function CategoryAside({category}) {
                     </div>
                 </div>
 
-                {/* Adjuntos */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         Adjuntos
@@ -96,7 +91,6 @@ function CategoryAside({category}) {
                     </button>
                 </div>
 
-                {/* Compartido con */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         Compartido con
@@ -112,7 +106,6 @@ function CategoryAside({category}) {
                     </button>
                 </div>
 
-                {/* Etiquetas */}
                 <div>
                     <div className="text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                         ☉ Etiquetas
@@ -141,7 +134,6 @@ function CategoryAside({category}) {
                     </button>
                 </div>
 
-                {/* Stats */}
                 <div className="flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-3" style={{ color: colors.textSecondary }}>
                         <span><Comment/>  0 </span>
@@ -149,7 +141,6 @@ function CategoryAside({category}) {
                     </div>
                 </div>
 
-                {/* Historial */}
                 <div className="pt-4 border-t" style={{ borderColor: colors.border }}>
                     <div className="space-y-3">
                         <div>

@@ -11,11 +11,15 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
     return { label: 'En stock', color: '#10b981' };
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
   return (
     <div className="flex flex-col">
-      {/* CONTENIDO GRID - SIN SCROLL INTERNO */}
       <div 
-        className="flex-1 rounded-lg  mb-4"
+        className="flex-1 rounded-lg mb-4"
         style={{
           backgroundColor: colors.surface,
           borderColor: colors.border,
@@ -33,29 +37,29 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
             {products.map((product) => {
               if (!product) return null;
               
-              const stockStatus = getStockStatus(product.stock || 0, product.minStock || 0);
-              const profit = (product.price || 0) - (product.cost || 0);
-              const margin = product.cost ? ((profit / product.cost) * 100).toFixed(1) : '0';
+              const stockStatus = getStockStatus(product.productStock || 0, product.minStock || 0);
+              const profit = (product.productPrice || 0) - (product.costPrice || 0);
+              const margin = product.costPrice ? ((profit / product.costPrice) * 100).toFixed(1) : '0';
 
               return (
                 <div
-                  key={product.id}
+                  key={product._id || product.id}
                   className="border rounded-lg p-4 transition-all hover:shadow-md"
                   style={{
                     backgroundColor: colors.background,
                     borderColor: colors.border,
                   }}
                 >
-                  {/* HEADER */}
                   <div className="flex justify-between items-start mb-3">
                     <div 
-                      className="w-12 h-12 rounded flex items-center justify-center"
+                      className="w-12 h-12 rounded flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: colors.primary + '20' }}
                     >
-                      <Inventory style={{ color: colors.primary }} />
+                      {/* <Inventory style={{ color: colors.primary }} /> */}
+                      <img src={product.productMainImage} alt={`Imagen del producto ${product.productName}`} />
                     </div>
                     <span 
-                      className="px-2 py-1 rounded-full text-xs font-medium"
+                      className="px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2"
                       style={{ 
                         backgroundColor: `${stockStatus.color}20`,
                         color: stockStatus.color
@@ -65,34 +69,32 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
                     </span>
                   </div>
 
-                  {/* CONTENIDO */}
-                  <div className="mb-3">
+                  <div className="mb-3 min-w-0">
                     <h3 
                       className="font-semibold mb-1 text-sm truncate"
                       style={{ color: colors.textPrimary }}
-                      title={product.name}
+                      title={product.productName}
                     >
-                      {product.name}
+                      {truncateText(product.productName, 30)}
                     </h3>
-                    <p className="text-xs mb-2" style={{ color: colors.textSecondary }}>
-                      {product.sku} • {product.category}
+                    <p className="text-xs mb-2 truncate" style={{ color: colors.textSecondary }}>
+                      <span className="font-mono">{product.sku}</span> • {truncateText(product.productCategory?.categoryName || 'Sin categoría', 20)}
                     </p>
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-sm" style={{ color: colors.textPrimary }}>
-                        ${product.price}
+                      <span className="font-bold text-sm truncate" style={{ color: colors.textPrimary }}>
+                        ${product.productPrice}
                       </span>
-                      <span className="text-xs" style={{ color: margin > 0 ? '#10b981' : '#ef4444' }}>
+                      <span className="text-xs truncate" style={{ color: margin > 0 ? '#10b981' : '#ef4444' }}>
                         {margin}% margen
                       </span>
                     </div>
                   </div>
 
-                  {/* STOCK Y ACCIONES */}
                   <div className="flex justify-between items-center">
-                    <span className="text-xs" style={{ color: colors.textSecondary }}>
-                      Stock: <strong>{product.stock}</strong>
+                    <span className="text-xs truncate" style={{ color: colors.textSecondary }}>
+                      Stock: <strong>{product.productStock}</strong>
                     </span>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-shrink-0">
                       <button
                         onClick={() => onEditProduct && onEditProduct(product)}
                         className="p-1 rounded transition-colors hover:bg-blue-100"
@@ -102,7 +104,7 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
                         <Edit fontSize="small" />
                       </button>
                       <button
-                        onClick={() => onDeleteProduct && onDeleteProduct(product.id)}
+                        onClick={() => onDeleteProduct && onDeleteProduct(product._id || product.id)}
                         className="p-1 rounded transition-colors hover:bg-red-100"
                         style={{ color: '#ef4444' }}
                         title="Eliminar producto"
@@ -118,7 +120,6 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
         )}
       </div>
 
-      {/* PAGINACIÓN - SIEMPRE VISIBLE EN LA PARTE INFERIOR */}
       {pagination && pagination.totalPages > 1 && (
         <div style={{backgroundColor: 'transparent', borderColor: colors.border}} className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 rounded-lg border">
           <span style={{ color: colors.textPrimary, fontSize: '14px' }} className="text-center sm:text-left">
@@ -140,14 +141,12 @@ function ProductsGrid({ products = [], onEditProduct, onDeleteProduct, paginatio
               ‹ Anterior
             </button>
             
-            {/* NÚMEROS DE PÁGINA - RESPONSIVE */}
             <div className="flex gap-1">
               {(() => {
                 const pages = [];
                 const totalPages = pagination.totalPages;
                 const currentPage = pagination.currentPage;
                 
-                // Mostrar máximo 3 páginas en móvil, 5 en desktop
                 let startPage = Math.max(1, currentPage - 1);
                 let endPage = Math.min(totalPages, currentPage + 1);
                 

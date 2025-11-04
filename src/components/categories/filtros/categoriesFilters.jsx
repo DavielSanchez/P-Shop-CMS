@@ -16,7 +16,6 @@ function CategoriesFilters({
   const colors = useColors();
   const [showFiltersModal, setShowFiltersModal] = useState(false);
 
-  // Valores por defecto para filters
   const safeFilters = {
     search: '',
     status: 'todos',
@@ -62,7 +61,6 @@ function CategoriesFilters({
     }
   };
 
-  // Modal de filtros para móvil
   const FiltersModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 lg:hidden">
       <div 
@@ -72,7 +70,6 @@ function CategoriesFilters({
           borderColor: colors.border,
         }}
       >
-        {/* Header del modal */}
         <div className="flex justify-between items-center p-4 border-b" style={{ borderColor: colors.border }}>
           <h3 className="font-semibold" style={{ color: colors.textPrimary }}>Filtros</h3>
           <button
@@ -84,9 +81,7 @@ function CategoriesFilters({
           </button>
         </div>
 
-        {/* Contenido del modal */}
         <div className="p-4 space-y-4">
-          {/* Filtro Estado */}
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: colors.textPrimary }}>
               Estado
@@ -116,7 +111,6 @@ function CategoriesFilters({
             </div>
           </div>
 
-          {/* Botón aplicar */}
           <button
             onClick={() => setShowFiltersModal(false)}
             className="w-full py-2 rounded-lg font-medium transition-all"
@@ -142,7 +136,6 @@ function CategoriesFilters({
         }}
       >
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
-          {/* BÚSQUEDA */}
           <div className="w-full lg:flex-1 min-w-0">
             <input
               type="text"
@@ -158,7 +151,6 @@ function CategoriesFilters({
             />
           </div>
 
-          {/* FILTROS AVANZADOS - SOLO EN DESKTOP */}
           <div className="hidden lg:flex flex-wrap gap-2">
             <div className="relative">
               <select
@@ -185,9 +177,7 @@ function CategoriesFilters({
             </div>
           </div>
 
-          {/* CONTENEDOR PARA BOTÓN FILTROS, ORDENAMIENTO Y VISTAS */}
           <div className="flex items-center gap-2 w-full lg:w-auto">
-            {/* BOTÓN FILTROS MÓVIL */}
             <button
               onClick={() => setShowFiltersModal(true)}
               className="lg:hidden p-2 border rounded-lg transition-all hover:bg-gray-50"
@@ -201,7 +191,6 @@ function CategoriesFilters({
               <FilterList fontSize="small" />
             </button>
 
-            {/* ORDENAMIENTO */}
             <div className="flex items-center gap-1">
               <div className="relative">
                 <select
@@ -247,7 +236,6 @@ function CategoriesFilters({
               </button>
             </div>
 
-            {/* SELECTOR DE VISTA */}
             <div 
               className="flex border rounded-lg overflow-hidden"
               style={{ borderColor: colors.border }}
@@ -276,7 +264,6 @@ function CategoriesFilters({
         </div>
       </div>
 
-      {/* MODAL DE FILTROS PARA MÓVIL */}
       {showFiltersModal && <FiltersModal />}
     </>
   );

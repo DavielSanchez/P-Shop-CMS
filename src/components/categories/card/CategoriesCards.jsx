@@ -163,7 +163,6 @@ function CategoriesCards({ categories = [], onEditCategory, onDeleteCategory, pa
         )}
       </div>
 
-      {/* PAGINACIÓN */}
       {pagination && pagination.totalPages > 1 && (
         <div style={{backgroundColor: 'transparent', borderColor: colors.border}} className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 rounded-lg border">
           <span style={{ color: colors.textPrimary, fontSize: '14px' }} className="text-center sm:text-left">

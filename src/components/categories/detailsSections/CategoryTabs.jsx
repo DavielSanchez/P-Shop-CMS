@@ -6,15 +6,12 @@ function CategoryTabs({ category }) {
     const [activeTab, setActiveTab] = useState('Detalles');
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        // Detalles
         categoryName: category.categoryName || '',
         categoryTag: category.categoryTag || '',
         categoryComment: category.categoryComment || '',
         description: category.description || '',
         slug: category.slug || '',
         tags: category.tags || [],
-        
-        // Configuración
         isActive: category.isActive !== undefined ? category.isActive : true,
         productCount: category.productCount || 0
     });
@@ -116,7 +113,6 @@ function CategoryTabs({ category }) {
                             </div>
                         </div>
 
-                        {/* Etiquetas */}
                         <div>
                             <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
                                 Etiquetas
@@ -172,7 +168,6 @@ function CategoryTabs({ category }) {
                             )}
                         </div>
 
-                        {/* Descripción */}
                         <div>
                             <h3 className="text-lg font-semibold mb-4" style={{ color: colors.textPrimary }}>
                                 Descripción
@@ -192,7 +187,6 @@ function CategoryTabs({ category }) {
                             />
                         </div>
 
-                        {/* Comentario interno */}
                         <div>
                             <h3 className="text-lg font-semibold mb-4" style={{ color: colors.textPrimary }}>
                                 Comentario Interno
@@ -288,7 +282,6 @@ function CategoryTabs({ category }) {
                             </p>
                         </div>
 
-                        {/* Fechas */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t" style={{ borderColor: colors.border }}>
                             <div>
                                 <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
@@ -356,7 +349,6 @@ function CategoryTabs({ category }) {
                                     <div className="text-sm" style={{ color: colors.textSecondary }}>
                                         Mostrando {formData.productCount} productos en esta categoría
                                     </div>
-                                    {/* Aquí iría la lista de productos */}
                                     <div className="mt-4 p-4 rounded border text-center"
                                         style={{ 
                                             backgroundColor: colors.background,
@@ -370,7 +362,6 @@ function CategoryTabs({ category }) {
                             )}
                         </div>
 
-                        {/* Estadísticas */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="p-4 rounded-lg border text-center"
                                 style={{ 

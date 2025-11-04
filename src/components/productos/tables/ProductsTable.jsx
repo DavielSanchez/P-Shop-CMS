@@ -8,7 +8,7 @@ function ProductsTable({
   products = [], 
   onEditProduct, 
   onDeleteProduct,
-  sortBy = 'name',
+  sortBy = 'productName',
   setSortBy,
   sortOrder = 'asc',
   setSortOrder,
@@ -16,6 +16,48 @@ function ProductsTable({
 }) {
   const colors = useColors();
   const navigate = useNavigate();
+
+  // Función para manejar productTag (puede ser string o array)
+  const getProductTags = (productTag) => {
+    if (!productTag) return 'Sin etiqueta';
+    
+    if (Array.isArray(productTag)) {
+      return productTag.slice(0, 2).join(', ');
+    }
+    
+    return productTag;
+  };
+
+  // Función para manejar productColors (puede ser string o array)
+  const getProductColors = (productColors) => {
+    if (!productColors) return '';
+    
+    if (Array.isArray(productColors)) {
+      return productColors.slice(0, 2).join(', ');
+    }
+    
+    return productColors;
+  };
+
+  // Función para calcular el precio con descuento
+  const getDiscountedPrice = (productPrice, productDiscount) => {
+    if (!productPrice) return 0;
+    
+    // Si productDiscount es un monto fijo de descuento
+    if (productDiscount && productDiscount > 0) {
+      return Math.max(0, productPrice - productDiscount);
+    }
+    
+    return productPrice;
+  };
+
+  // Función para calcular el porcentaje de descuento
+  const getDiscountPercentage = (productPrice, productDiscount) => {
+    if (!productPrice || !productDiscount || productDiscount <= 0) return 0;
+    
+    const percentage = (productDiscount / productPrice) * 100;
+    return Math.round(percentage);
+  };
 
   const getStockStatus = (stock, minStock) => {
     if (stock === 0) return { status: 'out-of-stock', label: 'Sin stock', color: '#ef4444' };
@@ -39,9 +81,16 @@ function ProductsTable({
     return sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />;
   };
 
+  // Función para formatear precio
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(price);
+  };
+
   return (
     <div className="flex flex-col">
-      {/* TABLA COMPACT Y RESPONSIVE */}
       <div 
         className="rounded-lg border mb-4 overflow-hidden"
         style={{
@@ -54,12 +103,12 @@ function ProductsTable({
             <thead>
               <tr style={{ backgroundColor: colors.background }}>
                 {[
-                  { key: 'name', label: 'Producto', className: 'text-left' },
+                  { key: 'productName', label: 'Producto', className: 'text-left' },
                   { key: 'sku', label: 'SKU', className: 'text-center' },
                   { key: 'category', label: 'Categoría', className: 'text-center' },
-                  { key: 'price', label: 'Precio', className: 'text-right' },
-                  { key: 'cost', label: 'Costo', className: 'text-right' },
-                  { key: 'stock', label: 'Stock', className: 'text-center' },
+                  { key: 'productPrice', label: 'Precio', className: 'text-right' },
+                  { key: 'costPrice', label: 'Costo', className: 'text-right' },
+                  { key: 'productStock', label: 'Stock', className: 'text-center' },
                   { key: 'status', label: 'Estado', className: 'text-center' },
                   { key: 'actions', label: '', className: 'text-center' }
                 ].map(({ key, label, className }) => (
@@ -92,13 +141,19 @@ function ProductsTable({
                 products.map((product) => {
                   if (!product) return null;
                   
-                  const stockStatus = getStockStatus(product.stock || 0, product.minStock || 0);
-                  const profit = (product.price || 0) - (product.cost || 0);
-                  const margin = product.cost ? ((profit / product.cost) * 100).toFixed(1) : '0';
+                  const stockStatus = getStockStatus(product.productStock || 0, product.minStock || 0);
+                  const costPrice = product.costPrice || 0;
+                  const sellingPrice = product.productPrice || 0;
+                  const profit = sellingPrice - costPrice;
+                  const margin = costPrice > 0 ? ((profit / costPrice) * 100).toFixed(1) : '0';
+                  
+                  // Calcular precios con descuento
+                  const discountedPrice = getDiscountedPrice(product.productPrice, product.productDiscount);
+                  const discountPercentage = getDiscountPercentage(product.productPrice, product.productDiscount);
                   
                   return (
                     <tr 
-                      key={product.id} 
+                      key={product._id || product.id} 
                       className="border-b transition-colors hover:bg-opacity-50"
                       style={{ 
                         borderColor: colors.border,
@@ -109,18 +164,31 @@ function ProductsTable({
                       <td className="p-2">
                         <div className="flex items-center gap-2 min-w-0">
                           <div 
-                            className="w-8 h-8 rounded flex-shrink-0 flex items-center justify-center"
-                            style={{ backgroundColor: colors.primary + '20' }}
+                            className="w-10 h-10 rounded flex-shrink-0 bg-cover bg-center border"
+                            style={{ 
+                              backgroundImage: `url(${product.productMainImage})`,
+                              backgroundColor: colors.primary + '20',
+                              borderColor: colors.border
+                            }}
                           >
-                            <Inventory style={{ color: colors.primary, fontSize: 16 }} />
+                            {!product.productMainImage && (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Inventory style={{ color: colors.primary, fontSize: 16 }} />
+                              </div>
+                            )}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="font-medium text-xs truncate" style={{ color: colors.textPrimary }}>
-                              {product.name}
+                              {product.productName || 'Sin nombre'}
                             </div>
                             <div className="text-xs truncate" style={{ color: colors.textSecondary }}>
-                              {(product.tags || []).slice(0, 1).join(', ')}
+                              {getProductTags(product.productTag)}
                             </div>
+                            {/* {product.productColors && product.productColors.length > 0 && (
+                              <div className="text-xs truncate" style={{ color: colors.textSecondary }}>
+                                Colores: {getProductColors(product.productColors)}
+                              </div>
+                            )} */}
                           </div>
                         </div>
                       </td>
@@ -128,57 +196,111 @@ function ProductsTable({
                       {/* SKU */}
                       <td className="p-2 text-center">
                         <div className="font-mono text-xs" style={{ color: colors.textPrimary }}>
-                          {product.sku}
+                          {product.sku || 'N/A'}
                         </div>
                       </td>
                       
                       {/* CATEGORÍA */}
                       <td className="p-2 text-center">
                         <div className="text-xs capitalize" style={{ color: colors.textPrimary }}>
-                          {product.category}
+                          {product.productCategory?.categoryName || 'Sin categoría'}
                         </div>
                       </td>
                       
                       {/* PRECIO */}
                       <td className="p-2 text-right">
-                        <div className="font-medium text-xs" style={{ color: colors.textPrimary }}>
-                          ${product.price}
-                        </div>
+                        {product.productOffer && product.productDiscount ? (
+                          <>
+                            {/* Precio con descuento */}
+                            <div className="font-medium text-xs" style={{ color: '#10b981' }}>
+                              {formatPrice(discountedPrice)}
+                            </div>
+                            {/* Precio original tachado */}
+                            <div className="text-xs line-through" style={{ color: colors.textSecondary }}>
+                              {formatPrice(product.productPrice)}
+                            </div>
+                            {/* Porcentaje de descuento */}
+                            <div className="text-xs font-medium" style={{ color: '#ef4444' }}>
+                              -{discountPercentage}%
+                            </div>
+                          </>
+                        ) : (
+                          /* Precio normal sin descuento */
+                          <div className="font-medium text-xs" style={{ color: colors.textPrimary }}>
+                            {formatPrice(product.productPrice || 0)}
+                          </div>
+                        )}
                       </td>
                       
-                      {/* COSTO Y MARGEN */}
+                      {/* COSTO */}
                       <td className="p-2 text-right">
-                        <div className="text-xs" style={{ color: colors.textPrimary }}>${product.cost}</div>
-                        <div className="text-xs" style={{ color: margin > 0 ? '#10b981' : '#ef4444' }}>
-                          {margin}%
+                        <div className="text-xs" style={{ color: colors.textPrimary }}>
+                          {costPrice > 0 ? formatPrice(costPrice) : 'N/A'}
                         </div>
+                        {costPrice > 0 && (
+                          <div 
+                            className="text-xs" 
+                            style={{ color: margin > 0 ? '#10b981' : '#ef4444' }}
+                          >
+                            {margin}%
+                          </div>
+                        )}
                       </td>
                       
                       {/* STOCK */}
                       <td className="p-2 text-center">
                         <div className="font-medium text-xs" style={{ color: colors.textPrimary }}>
-                          {product.stock}
+                          {product.productStock || 0}
                         </div>
+                        {product.minStock > 0 && (
+                          <div className="text-xs" style={{ color: colors.textSecondary }}>
+                            Mín: {product.minStock}
+                          </div>
+                        )}
                       </td>
                       
                       {/* ESTADO */}
                       <td className="p-2 text-center">
-                        <span 
-                          className="px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap"
-                          style={{ 
-                            backgroundColor: `${stockStatus.color}15`,
-                            color: stockStatus.color
-                          }}
-                        >
-                          {stockStatus.label}
-                        </span>
+                        <div className="flex flex-col gap-1 items-center">
+                          {/* Estado de stock */}
+                          <span 
+                            className="px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap"
+                            style={{ 
+                              backgroundColor: `${stockStatus.color}15`,
+                              color: stockStatus.color
+                            }}
+                          >
+                            {stockStatus.label}
+                          </span>
+                          {/* Estado del producto */}
+                          <span 
+                            className="px-2 py-0.5 rounded text-xs whitespace-nowrap"
+                            style={{ 
+                              backgroundColor: product.status === 'active' ? '#10b98115' : 
+                                            product.status === 'draft' ? '#6b728015' : 
+                                            product.status === 'inactive' ? '#ef444415' : '#9ca3af15',
+                              color: product.status === 'active' ? '#10b981' : 
+                                    product.status === 'draft' ? '#6b7280' : 
+                                    product.status === 'inactive' ? '#ef4444' : '#9ca3af'
+                            }}
+                          >
+                            {product.status === 'active' ? 'Activo' : 
+                             product.status === 'draft' ? 'Borrador' : 
+                             product.status === 'inactive' ? 'Inactivo' : 
+                             product.status || 'Desconocido'}
+                          </span>
+                        </div>
                       </td>
                       
                       {/* ACCIONES */}
                       <td className="p-2 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <button
-                            onClick={() => navigate(`/product/${product.name.toLowerCase().replace(/\s+/g, '-')}`)}
+                            onClick={() => {
+                              navigate(`/product/${product._id}`, { 
+                                state: { product }
+                              })
+                            }}
                             className="p-1 rounded transition-colors hover:bg-blue-100"
                             style={{ color: '#10b981' }}
                             title="Ver detalle del producto"
@@ -194,7 +316,7 @@ function ProductsTable({
                             <Edit fontSize="small" />
                           </button>
                           <button
-                            onClick={() => onDeleteProduct && onDeleteProduct(product.id)}
+                            onClick={() => onDeleteProduct && onDeleteProduct(product._id || product.id)}
                             className="p-1 rounded transition-colors hover:bg-red-100"
                             style={{ color: '#ef4444' }}
                             title="Eliminar producto"
@@ -212,7 +334,6 @@ function ProductsTable({
         </div>
       </div>
 
-      {/* PAGINACIÓN COMPACTA */}
       {pagination && pagination.totalPages > 1 && (
         <div style={{backgroundColor: 'transparent', borderColor: colors.border}} 
              className="flex flex-col sm:flex-row justify-between items-center gap-3 p-3 rounded-lg border">
@@ -242,11 +363,9 @@ function ProductsTable({
                 const totalPages = pagination.totalPages;
                 const currentPage = pagination.currentPage;
                 
-                // Mostrar páginas alrededor de la actual
                 let startPage = Math.max(1, currentPage - 1);
                 let endPage = Math.min(totalPages, currentPage + 1);
                 
-                // Si hay muchas páginas, mostrar primera y última
                 if (totalPages > 5) {
                   if (currentPage <= 3) {
                     startPage = 1;

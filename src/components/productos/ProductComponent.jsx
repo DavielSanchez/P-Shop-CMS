@@ -10,7 +10,6 @@ import ProductForm from './form/ProductForm.jsx';
 function ProductComponent() {
   const colors = useColors();
   
-  // Usar el hook sin pasar parámetros - el viewMode se maneja internamente
   const {
     products,
     pagination,
@@ -46,7 +45,6 @@ function ProductComponent() {
     console.log('Eliminar producto:', productId);
   };
 
-  // Renderizar vista según el modo con paginación integrada
   const renderView = () => {
     const viewProps = {
       products: pagination.paginatedItems,
@@ -71,7 +69,6 @@ function ProductComponent() {
 
   return (
     <div className="w-full h-full flex flex-col pY-6">
-      {/* Header del módulo */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>
@@ -91,7 +88,6 @@ function ProductComponent() {
         </button>
       </div>
 
-      {/* Contenido dinámico */}
       <div className="flex-1 min-h-0 flex flex-col">
         {showForm ? (
           <ProductForm 

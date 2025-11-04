@@ -34,7 +34,6 @@ function CategoriesForm({ category, onClose, onSave }) {
       [field]: value
     }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -42,7 +41,6 @@ function CategoriesForm({ category, onClose, onSave }) {
       }));
     }
 
-    // Auto-generate slug from category name
     if (field === 'categoryName' && !category) {
       const generatedSlug = value.toLowerCase()
         .replace(/\s+/g, '-')
@@ -93,7 +91,6 @@ function CategoriesForm({ category, onClose, onSave }) {
         borderColor: colors.border,
       }}
     >
-      {/* HEADER DEL FORMULARIO */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <div 
@@ -121,10 +118,8 @@ function CategoriesForm({ category, onClose, onSave }) {
         </button>
       </div>
 
-      {/* FORMULARIO */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* NOMBRE DE LA CATEGORÍA */}
           <div className="lg:col-span-2">
             <label className="block text-sm font-medium mb-2" style={{ color: colors.textPrimary }}>
               Nombre de la Categoría *
@@ -148,7 +143,6 @@ function CategoriesForm({ category, onClose, onSave }) {
             )}
           </div>
 
-          {/* SLUG */}
           <div className="lg:col-span-2">
             <label className="block text-sm font-medium mb-2" style={{ color: colors.textPrimary }}>
               Slug *
@@ -175,7 +169,6 @@ function CategoriesForm({ category, onClose, onSave }) {
             </p>
           </div>
 
-          {/* DESCRIPCIÓN */}
           <div className="lg:col-span-2">
             <label className="block text-sm font-medium mb-2" style={{ color: colors.textPrimary }}>
               Descripción
@@ -194,7 +187,6 @@ function CategoriesForm({ category, onClose, onSave }) {
             />
           </div>
 
-          {/* ETIQUETAS */}
           <div className="lg:col-span-2">
             <label className="block text-sm font-medium mb-2" style={{ color: colors.textPrimary }}>
               Etiquetas
@@ -216,7 +208,6 @@ function CategoriesForm({ category, onClose, onSave }) {
             </p>
           </div>
 
-          {/* ESTADO */}
           <div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -239,7 +230,6 @@ function CategoriesForm({ category, onClose, onSave }) {
           </div>
         </div>
 
-        {/* BOTONES DE ACCIÓN */}
         <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: colors.border }}>
           <button
             type="button"

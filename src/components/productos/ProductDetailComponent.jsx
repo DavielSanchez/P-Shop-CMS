@@ -1,22 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useColors } from '../../hooks/useColor';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowBack } from '@mui/icons-material';
 import { useProducts } from '../../hooks/useProducts';
+import {productService} from '../../services/products'
 import Aside from './detailsSections/aside';
 import Tabs from './detailsSections/Tabs';
 
 function ProductDetail() {
   const colors = useColors();
   const navigate = useNavigate();
-  const { name } = useParams();
-  const { products } = useProducts();
+  const location = useLocation();
+  const { id } = useParams(); 
   
-  const product = products.find(p => 
-    p.name.toLowerCase().replace(/\s+/g, '-') === name?.toLowerCase()
-  );
-
+  
+  const [product, setProduct] = useState(location.state?.product || null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) {
+        setLoading(false);
+        console.log(id)
+        return;
+      }
+
+      // try {
+      //   setLoading(true);
+      //   const productData = await productService.getProductById(id);
+      //   setProduct(productData);
+      // } catch (err) {
+      //   setError(err.message);
+      //   console.error('Error loading product:', err);
+      // } finally {
+      //   setLoading(false);
+      // }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,27 +58,57 @@ function ProductDetail() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  if (!product) {
+  // Estados de carga y error
+  if (loading) {
     return (
-      <div>
+      <div className="flex justify-center items-center py-8">
         <div className="text-center">
-          <h2 className="text-lg font-semibold mb-3" style={{ color: colors.textPrimary }}>
-            Producto no encontrado
-          </h2>
-          <button
-            onClick={() => navigate('/products')}
-            className="px-3 py-2 rounded-lg flex items-center gap-1 text-sm"
-            style={{ backgroundColor: colors.primary, color: '#fff' }}
-          >
-            <ArrowBack fontSize="small" />
-            Volver
-          </button>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" 
+               style={{ borderColor: colors.primary }}></div>
+          <p className="mt-2" style={{ color: colors.textPrimary }}>Cargando producto...</p>
         </div>
       </div>
     );
   }
 
-  return (
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <h2 className="text-lg font-semibold mb-3" style={{ color: colors.textPrimary }}>
+          Error al cargar el producto
+        </h2>
+        <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>{error}</p>
+        <button
+          onClick={() => navigate('/products')}
+          className="px-3 py-2 rounded-lg flex items-center gap-1 text-sm mx-auto"
+          style={{ backgroundColor: colors.primary, color: '#fff' }}
+        >
+          <ArrowBack fontSize="small" />
+          Volver a productos
+        </button>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center py-8">
+        <h2 className="text-lg font-semibold mb-3" style={{ color: colors.textPrimary }}>
+          Producto no encontrado
+        </h2>
+        <button
+          onClick={() => navigate('/products')}
+          className="px-3 py-2 rounded-lg flex items-center gap-1 text-sm mx-auto"
+          style={{ backgroundColor: colors.primary, color: '#fff' }}
+        >
+          <ArrowBack fontSize="small" />
+          Volver a productos
+        </button>
+      </div>
+    );
+  }
+
+return (
     <div>
       <div className="max-w-full">
         <div className="flex items-center justify-between gap-2 mb-6 py-4 rounded-xl" style={{ 
@@ -72,20 +126,18 @@ function ProductDetail() {
             
             <div className="min-w-0 flex flex-1">
               <h1 className="text-lg md:text-2xl font-bold truncate" style={{ color: colors.textPrimary }}>
-                {product.name}
+                {product.name || product.productName}
               </h1>
               <span 
                 className="flex-shrink-0 self-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ml-3"
                 style={{ 
-                    backgroundColor: '#10b98115',
-                    color: '#10b981'
+                  backgroundColor: '#10b98115',
+                  color: '#10b981'
                 }}
-                >
+              >
                 Habilitado
-                </span>
+              </span>
             </div>
-            
-            
           </div>
 
           <div className="flex items-center gap-1 flex-shrink-0">
