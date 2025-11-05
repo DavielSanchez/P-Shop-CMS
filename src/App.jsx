@@ -1,21 +1,22 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Dashboard from './pages/Dashboard'
-import Products from './pages/Products'
-import Categories from './pages/Categories'
-import Inventory from './pages/Inventory'
-import Orders from './pages/Orders'
-import Customers from './pages/Customers'
-import Payments from './pages/Payments'
-import Campaigns from './pages/Campaigns'
-import Discounts from './pages/Discounts'
-import Coupons from './pages/Coupons'
-import Suppliers from './pages/Suppliers'
-import Reports from './pages/Reports'
-import Settings from './pages/Settings'
-import Users from './pages/Users'
-import Layout from './components/Layout/MainLayout'
-import ProductDetail from './pages/ProductDetail'
-import CategoryDetail from './components/categories/CategoryDetail'
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import Categories from "./pages/Categories";
+import Inventory from "./pages/Inventory";
+import Orders from "./pages/Orders";
+import Customers from "./pages/Customers";
+import Payments from "./pages/Payments";
+import Campaigns from "./pages/Campaigns";
+import Discounts from "./pages/Discounts";
+import Coupons from "./pages/Coupons";
+import Suppliers from "./pages/Suppliers";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+import Users from "./pages/Users";
+import Layout from "./components/Layout/MainLayout";
+import ProductDetail from "./pages/ProductDetail";
+import CategoryDetail from "./components/categories/CategoryDetail";
 
 function App() {
   return (
@@ -25,9 +26,9 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
-            <Route path="product/:name" element={<ProductDetail/>} />
+            <Route path="product/:name" element={<ProductDetail />} />
             <Route path="categories" element={<Categories />} />
-            <Route path="categories/:name" element={<CategoryDetail/>} />
+            <Route path="categories/:name" element={<CategoryDetail />} />
             {/* <Route path="inventory" element={<Inventory />} />
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
@@ -43,7 +44,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

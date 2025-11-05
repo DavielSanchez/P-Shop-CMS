@@ -2,18 +2,18 @@ import React from 'react';
 import { useProductSizes } from '../../../../hooks/useProductSizes';
 
 function ProductSizesField({ isEditing, colors, formData, handleInputChange, product }) {
-    const { 
-        sizeType, 
-        useMeasures, 
-        setUseMeasures, 
-        options, 
-        label, 
-        placeholder, 
-        emptyMessage 
-    } = useProductSizes(product?.productCategory?.categoryName || product?.category);
+    const {
+      sizeType,
+      useMeasures,
+      setUseMeasures,
+      options,
+      label,
+      placeholder,
+      emptyMessage,
+    } = useProductSizes(formData.productCategory || formData.category);
 
     // Solo mostrar el switch si la categoría no está claramente definida
-    const showSwitch = !product?.productCategory?.categoryName && !product?.category;
+    const showSwitch = !formData.productCategory && !formData.category;
 
     return (
         <div className="md:col-span-2">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../NavBar/Navbar";
 import SideBar from "../SideBar/SideBar";
@@ -51,7 +51,11 @@ export default function Layout() {
           isMobile && !sidebarOpen ? "-translate-x-full" : "translate-x-0"
         }`}
       >
-        <SideBar open={sidebarOpen} setOpen={setSidebarOpen} isMobile={isMobile} />
+        <SideBar
+          open={sidebarOpen}
+          setOpen={setSidebarOpen}
+          isMobile={isMobile}
+        />
       </div>
 
       {/* Contenido principal */}
@@ -63,10 +67,7 @@ export default function Layout() {
         `}
       >
         {/* Navbar (se le pasa isMobile y toggleSidebar) */}
-        <Navbar
-          toggleSidebar={toggleSidebar}
-          isMobile={isMobile}
-        />
+        <Navbar toggleSidebar={toggleSidebar} isMobile={isMobile} />
 
         <main className="flex-1 overflow-auto py-6 scrollbar-hide">
           <Outlet />

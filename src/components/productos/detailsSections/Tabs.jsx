@@ -1,70 +1,77 @@
 import React, { useState } from 'react';
-import { useColors } from '../../../hooks/useColor';
-import { useProductForm } from '../../../hooks/useProductForm';
-import DetailsTab from './tabs/DetailsTab';
-import InventoryTab from './tabs/InventoryTab';
-import AccountingTab from './tabs/AccountingTab';
-import SalesTab from './tabs/SalesTab';
+import { useColors } from "../../../hooks/useColor";
+import DetailsTab from "./tabs/DetailsTab";
+import InventoryTab from "./tabs/InventoryTab";
+import AccountingTab from "./tabs/AccountingTab";
+import SalesTab from "./tabs/SalesTab";
 
-function Tabs({ product }) {
-    const colors = useColors();
-    const [activeTab, setActiveTab] = useState('Detalles');
-    const [isEditing, setIsEditing] = useState(false);
-    
-    const { formData, handleInputChange, handleCheckboxChange } = useProductForm(product);
+function Tabs({
+  product,
+  isEditing,
+  setIsEditing,
+  formData,
+  handleInputChange,
+  handleCheckboxChange,
+}) {
+  const colors = useColors();
+  const [activeTab, setActiveTab] = useState("Detalles");
 
-    const tabs = ['Detalles', 'Inventario', 'Contabilidad', 'Ventas'];
+  const tabs = ["Detalles", "Inventario", "Contabilidad", "Ventas"];
 
-    const renderTabContent = () => {
-        const commonProps = {
-            isEditing,
-            setIsEditing,
-            colors,
-            formData,
-            handleInputChange,
-            handleCheckboxChange
-        };
-
-        switch (activeTab) {
-            case 'Detalles':
-                return <DetailsTab {...commonProps} product={product} />;
-            case 'Inventario':
-                return <InventoryTab {...commonProps} />;
-            case 'Contabilidad':
-                return <AccountingTab {...commonProps} />;
-            case 'Ventas':
-                return <SalesTab {...commonProps} product={product} />;
-            default:
-                return null;
-        }
+  const renderTabContent = () => {
+    const commonProps = {
+      isEditing,
+      setIsEditing,
+      colors,
+      formData: formData || product,
+      handleInputChange,
+      handleCheckboxChange,
     };
 
-    return (
-        <div className="w-full border rounded-lg" style={{ borderColor: colors.border }}>
-            <div className="flex border-b" style={{ borderColor: colors.border }}>
-                {tabs.map((tab) => (
-                    <button
-                        key={tab}
-                        className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                            activeTab === tab ? 'font-semibold' : ''
-                        }`}
-                        style={{ 
-                            borderColor: activeTab === tab ? colors.primary : 'transparent',
-                            color: activeTab === tab ? colors.primary : colors.textSecondary,
-                            backgroundColor: activeTab === tab ? colors.primary + '08' : 'transparent'
-                        }}
-                        onClick={() => setActiveTab(tab)}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
+    switch (activeTab) {
+      case "Detalles":
+        return <DetailsTab {...commonProps} product={product} />;
+      case "Inventario":
+        return <InventoryTab {...commonProps} />;
+      case "Contabilidad":
+        return <AccountingTab {...commonProps} />;
+      case "Ventas":
+        return <SalesTab {...commonProps} product={product} />;
+      default:
+        return null;
+    }
+  };
 
-            <div className="p-5" style={{ color: colors.textPrimary }}>
-                {renderTabContent()}
-            </div>
-        </div>
-    );
+  return (
+    <div
+      className="w-full border rounded-lg"
+      style={{ borderColor: colors.border }}
+    >
+      <div className="flex border-b" style={{ borderColor: colors.border }}>
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab ? "font-semibold" : ""
+            }`}
+            style={{
+              borderColor: activeTab === tab ? colors.primary : "transparent",
+              color: activeTab === tab ? colors.primary : colors.textSecondary,
+              backgroundColor:
+                activeTab === tab ? colors.primary + "08" : "transparent",
+            }}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="p-5" style={{ color: colors.textPrimary }}>
+        {renderTabContent()}
+      </div>
+    </div>
+  );
 }
 
 export default Tabs;

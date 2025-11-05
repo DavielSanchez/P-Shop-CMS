@@ -1,10 +1,11 @@
-import CategoriesComponent from "../components/categories/CategoriesComponent"
+import React from "react";
+import CategoriesComponent from "../components/categories/CategoriesComponent";
 
 function Categories() {
   return (
     <>
-    <CategoriesComponent/>
+      <CategoriesComponent />
     </>
-  )
+  );
 }
-export default Categories
+export default Categories;
